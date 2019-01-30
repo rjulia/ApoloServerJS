@@ -1,11 +1,11 @@
-type Cliente {
+type Client {
   id: ID
   nombre: String!
   apellido: String!
   empresa: String
   emails: [Email]
   edad: Int
-  tipo: TipoClinte
+  tipo: TypeClient
   pedidos: [Pedido]
 }
 type Email {
@@ -17,25 +17,26 @@ type Pedido {
   precio: Int
 }
 type Query {
-  getClientes(limit:Int): [Cliente]
-  getCliente(id: ID): Cliente 
+  getClients(limit:Int): [Client]
+  getClient(id: ID): Client 
 }
 
-enum TipoClinte {
+enum TypeClient {
   BASIC
   PREMIUM
 }
-
-input ClienteInput {
+""" Campos para los cliente nuevos"""
+input ClientInput {
   id: ID
   nombre: String
   apellido: String
   empresa: String
   edad: Int
   emails: [EmailInput]
-  tipo: TipoClinte
+  tipo: TypeClient
   pedidos: [PedidoInput]
 }
+""" Campos para los pedidos nuevos"""
 input PedidoInput {
   Producto: String
   precio: Int
@@ -45,8 +46,8 @@ input EmailInput {
 }
 
 type Mutation {
-  setCliente(input: ClienteInput): Cliente
-  uploadCliente(input: ClienteInput): Cliente
-  deleteCliente(id: ID!): String
+  setClient(input: ClientInput): Client
+  uploadClient(input: ClientInput): Client
+  deleteClient(id: ID!): String
 
 }

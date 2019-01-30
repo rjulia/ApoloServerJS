@@ -1,25 +1,25 @@
 import mongoose from "mongoose";
-import { Clientes  } from "./db";
+import { Clients  } from "./db";
 import { rejects } from "assert";
 
 export const resolvers = {
     Query: {
-        getClientes: (root, {limit}) =>{
-            return Clientes.find({}).limit(limit);
+        getClients: (root, {limit}) =>{
+            return Clients.find({}).limit(limit);
         },
-        getCliente:  (root, {id}) =>{
+        getClient:  (root, {id}) =>{
             return new Promise((resolve, object)=> {
                 console.log(object)
-                Clientes.findById(id, (err, cliente)=>{
+                Clients.findById(id, (err, client)=>{
                     if(err) rejects(err)
-                    else resolve(cliente)
+                    else resolve(client)
                 })
             })
         }
     },
     Mutation: {
-        setCliente: (root, {input}) =>{
-            const nuevoCliente = new Clientes({
+        setClient: (root, {input}) =>{
+            const newClient = new Clients({
                 nombre : input.nombre,
                 apellido : input.apellido,
                 empresa : input.empresa,
@@ -28,26 +28,26 @@ export const resolvers = {
                 tipo : input.tipo,
                 pedidos : input.pedidos
             });
-            nuevoCliente.id = nuevoCliente._id;
+            newClient.id = newClient._id;
 
             return new Promise((resolve, obj)=>{
-                nuevoCliente.save((err)=>{
+                newClient.save((err)=>{
                     if(err) rejects(err)
-                    else resolve(nuevoCliente)
+                    else resolve(newClient)
                 })
             })
         },
-        uploadCliente: (root, {input}) => {
+        uploadClient: (root, {input}) => {
             return new Promise((resolve, obj)=>{
-                Clientes.findOneAndUpdate({_id : input.id }, input, {new: true}, (err, cliente) => {
+                Clients.findOneAndUpdate({_id : input.id }, input, {new: true}, (err, client) => {
                     if(err) rejects(err)
-                    else resolve(cliente)
+                    else resolve(client)
                 });
             });
         },
-        deleteCliente: (root, {id}) => {
+        deleteClient: (root, {id}) => {
             return new Promise((resolve, obj)=>{
-                Clientes.findOneAndRemove({_id : id }, (err) => {
+                Clients.findOneAndRemove({_id : id }, (err) => {
                     if(err) rejects(err)
                     else resolve("se ha borrado correctamente")
                 });

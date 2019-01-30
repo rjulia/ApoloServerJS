@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/clientes', {useNewUrlParser: true});
 
 
-const clientesSchema = new mongoose.Schema({
+const clientsSchema = new mongoose.Schema({
     nombre: String,
     apellido: String,
     empresa: String,
@@ -15,6 +15,6 @@ const clientesSchema = new mongoose.Schema({
     pedidos: Array,
 })
 
-const Clientes = mongoose.model('clientes', clientesSchema);
+const Clients = mongoose.model('clients', clientsSchema);
 
-export { Clientes }
+export { Clients }
