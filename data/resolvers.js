@@ -4,8 +4,8 @@ import { rejects } from "assert";
 
 export const resolvers = {
     Query: {
-        getClients: (root, {limit}) =>{
-            return Clients.find({}).limit(limit);
+        getClients: (root, {limit, offset}) =>{
+            return Clients.find({}).limit(limit).skip(offset);
         },
         getClient:  (root, {id}) =>{
             return new Promise((resolve, object)=> {
@@ -13,6 +13,14 @@ export const resolvers = {
                 Clients.findById(id, (err, client)=>{
                     if(err) rejects(err)
                     else resolve(client)
+                })
+            })
+        }, 
+        totalClients: (root) =>{
+            return new Promise((resolve, object)=>{
+                Clients.countDocuments({}, (err, count) => {
+                    if(err) rejects(err)
+                    else resolve(count)
                 })
             })
         }
