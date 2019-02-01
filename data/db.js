@@ -5,7 +5,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/clientes', {useNewUrlParser: true});
 
 mongoose.set('setFindAndModify', false);
-// mongoose.set('useFindAndModify', false);
+mongoose.set('useFindAndModify', false);
 
 
 const clientsSchema = new mongoose.Schema({
