@@ -35,6 +35,7 @@ type Query {
   totalClients : String
   getProducts(limit: Int, offset: Int): [Product]
   getProduct(id: ID!): Product
+  totalProducts : String
 
 }
 """ Campos para los cliente nuevos"""
