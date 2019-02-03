@@ -76,7 +76,7 @@ export const resolvers = {
             return new Promise((resolve, obj)=>{
                 Clients.findOneAndDelete({_id : id }, (err) => {
                     if(err) rejects(err)
-                    else resolve("se ha borrado correctamente")
+                    else resolve('Your file has been deleted.')
                 });
             });
         },
@@ -107,7 +107,7 @@ export const resolvers = {
             return new Promise((resolve, obj)=>{
                 Products.findOneAndDelete({_id : id }, (err) => {
                     if(err) rejects(err)
-                    else resolve("se ha eliminado correctamente")
+                    else resolve('Your file has been deleted.')
                 });
             });
         },
