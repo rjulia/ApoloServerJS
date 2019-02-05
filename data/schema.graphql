@@ -1,20 +1,24 @@
 type Client {
   id: ID
-  nombre: String!
-  apellido: String!
-  empresa: String
+  name: String
+  surname: String
+  company: String
+  years: Int
   emails: [Email]
-  edad: Int
-  tipo: TypeClient
-  pedidos: [Pedido]
+  type: TypeClient
+  orders: [Order]
 }
 type Email {
   email: String
 }
 
-type Pedido {
-  Producto: String
-  precio: Int
+type Order {
+  id: ID
+  order: [String],
+  total: Int,
+  date: String,
+  client: String,
+  state: String
 }
 
 type Product {
@@ -41,18 +45,22 @@ type Query {
 """ Campos para los cliente nuevos"""
 input ClientInput {
   id: ID
-  nombre: String
-  apellido: String
-  empresa: String
-  edad: Int
+  name: String
+  surname: String
+  company: String
+  years: Int
   emails: [EmailInput]
-  tipo: TypeClient
-  pedidos: [PedidoInput]
+  type: TypeClient
+  orders: [OrderInput]
 }
 """ Campos para los pedidos nuevos"""
-input PedidoInput {
-  Producto: String
-  precio: Int
+input OrderInput {
+  id: ID
+  order: [String],
+  total: Int,
+  date: String,
+  client: String,
+  state: String
 }
 input EmailInput {
   email: String
@@ -73,5 +81,7 @@ type Mutation {
   setProduct(input: ProductInput): Product
   uploadProduct(input: ProductInput): Product
   deleteProduct(id: ID!): String
+  #Orders
+  setOrders(input: OrderInput): Order
 
 }

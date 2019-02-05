@@ -9,13 +9,13 @@ mongoose.set('useFindAndModify', false);
 
 
 const clientsSchema = new mongoose.Schema({
-    nombre: String,
-    apellido: String,
-    empresa: String,
+    name: String,
+    surname: String,
+    company: String,
     emails: Array,
-    edad: Number,
-    tipo: String,
-    pedidos: Array,
+    years: Number,
+    type: String,
+    orders: Array,
 })
 
 const Clients = mongoose.model('clients', clientsSchema);
@@ -29,4 +29,14 @@ const productsSchema = new mongoose.Schema({
 
 const Products = mongoose.model('products', productsSchema);
 
-export { Clients, Products }
+const orderSchema = new mongoose.Schema({
+    order: Array,
+    total: Number,
+    date: Date,
+    client: String,
+    state: String
+})
+
+const Orders = mongoose.model('orders', orderSchema);
+
+export { Clients, Products, Orders }
