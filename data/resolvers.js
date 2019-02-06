@@ -25,8 +25,14 @@ export const resolvers = {
         });
       });
     },
-    getProducts: (root, { limit, offset }) => {
-      return Products.find({})
+    getProducts: (root, { limit, offset, hasStock }) => {
+      let filter;
+      // con $gt puedes crear un filtro que su cantidad sea mayor de lo que le pases, MongoDB 
+      // https://docs.mongodb.com/manual/reference/operator/query/gt/index.html
+      if (hasStock) {
+          filter = {stock: {$gt: 0}}
+      }
+      return Products.find(filter)
         .limit(limit)
         .skip(offset);
     },
@@ -137,6 +143,8 @@ export const resolvers = {
 
       return new Promise((resolve, obj) => {
         // recorrer y actualizar la cantidad de productos con $inc de mongodb
+        // es para variar un dato en otra collecion
+        // https://docs.mongodb.com/manual/reference/operator/update/inc/index.html
         input.order.forEach(order => {
             Products.updateOne({_id: order.id }, 
               { "$inc" : 
