@@ -6,7 +6,6 @@ type Client {
   years: Int
   emails: [Email]
   type: TypeClient
-  orders: [Order]
 }
 type Email {
   email: String
@@ -14,11 +13,16 @@ type Email {
 
 type Order {
   id: ID
-  order: [String],
-  total: Int,
+  order: [OderProduct],
+  total: Float,
   date: String,
-  client: String,
-  state: String
+  client: ID,
+  state: StateOrder
+}
+
+type OderProduct {
+  id: ID
+  quantity: Int
 }
 
 type Product {
@@ -31,6 +35,11 @@ type Product {
 enum TypeClient {
   BASIC
   PREMIUM
+}
+enum StateOrder {
+  PENDING
+  COMPLETE
+  CANCELLED
 }
 
 type Query {
@@ -51,20 +60,27 @@ input ClientInput {
   years: Int
   emails: [EmailInput]
   type: TypeClient
-  orders: [OrderInput]
 }
-""" Campos para los pedidos nuevos"""
-input OrderInput {
-  id: ID
-  order: [String],
-  total: Int,
-  date: String,
-  client: String,
-  state: String
-}
+
 input EmailInput {
   email: String
 }
+
+""" Campos para los pedidos nuevos"""
+input OrderInput {
+  id: ID
+  order: [OderProductInput],
+  total: Float,
+  date: String,
+  client: ID,
+  state: StateOrder
+}
+
+input OderProductInput {
+  id: ID
+  quantity: Int
+}
+
 """ Campos para los nuevos productos"""
 input ProductInput {
   id: ID

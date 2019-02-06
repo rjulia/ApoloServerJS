@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Clients, Products } from "./db";
+import { Clients, Products, Orders } from "./db";
 import { rejects } from "assert";
 
 export const resolvers = {
@@ -56,7 +56,6 @@ export const resolvers = {
         emails: input.emails,
         years: input.years,
         type: input.type,
-        orders: input.orders
       });
       newClient.id = newClient._id;
 
@@ -125,16 +124,28 @@ export const resolvers = {
       });
     },
     setOrders: (root, { input }) => {
-      const newOrder = new Products({
+
+      const newOrder = new Orders({
         order: input.order,				
 				total: input.total,
-				date: input.date,			
+				date: new Date(),			
 				client: input.client,
-				state: input.state,      
+				state: "PENDING",      
 				});
+
       newOrder.id = newOrder._id;
 
       return new Promise((resolve, obj) => {
+        // recorrer y actualizar la cantidad de productos con $inc de mongodb
+        input.order.forEach(order => {
+            Products.updateOne({_id: order.id }, 
+              { "$inc" : 
+                { "stock" : -order.quantity }
+              }, function (error) {
+                  if(error) return new Error(error);
+              }
+            )
+        });
         newOrder.save(err => {
           if (err) rejects(err);
           else resolve(newOrder);
