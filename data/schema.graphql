@@ -43,12 +43,16 @@ enum StateOrder {
 }
 
 type Query {
+  #Clients
   getClients(limit: Int, offset: Int): [Client]
   getClient(id: ID): Client 
   totalClients : String
+  #Products
   getProducts(limit: Int, offset: Int, hasStock: Boolean): [Product]
   getProduct(id: ID): Product
   totalProducts : String
+  #Orders
+  getOrders(client: String): [Order]
 
 }
 """ Campos para los cliente nuevos"""
@@ -90,6 +94,7 @@ input ProductInput {
 }
 
 type Mutation {
+  #Clients
   setClient(input: ClientInput): Client
   uploadClient(input: ClientInput): Client
   deleteClient(id: ID!): String
