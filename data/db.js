@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 mongoose.Promise = global.Promise;
-
 mongoose.connect('mongodb://localhost/clientes', {useNewUrlParser: true});
-
 mongoose.set('setFindAndModify', false);
 mongoose.set('useFindAndModify', false);
+
 
 
 const clientsSchema = new mongoose.Schema({
@@ -38,6 +38,37 @@ const orderSchema = new mongoose.Schema({
     state: String
 })
 
+
+
 const Orders = mongoose.model('orders', orderSchema);
 
-export { Clients, Products, Orders }
+
+const usersSchema = new mongoose.Schema({
+    user: String,
+    password: String,
+})
+
+// hashear loos password antes de guardarlos
+
+usersSchema.pre('save', function (next) {
+
+    // si es password no esta modificado ejecutar la siguiente funcionj
+    if(!this.isModified('password')){
+        return next()
+    }
+    bcrypt.genSalt(10, (err, salt)=>{
+        if(err) return next(err);
+        bcrypt.hash(this.password, salt, (err, hash)=>{
+            if(err) return next(err);
+            this.password = hash;
+            next();
+        })
+    })
+    
+})
+
+
+const Users = mongoose.model('users', usersSchema)
+
+
+export { Clients, Products, Orders, Users }

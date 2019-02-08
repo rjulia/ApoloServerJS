@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Clients, Products, Orders } from "./db";
+import { Clients, Products, Orders, Users } from "./db";
 import { rejects } from "assert";
 
 export const resolvers = {
@@ -236,6 +236,21 @@ export const resolvers = {
           }
         );
       })
+    },
+    createUser: async (root, { user, password } ) =>{
+        // revisar si hayalguno repetido
+        const userExit = await Users.findOne({user})
+
+        if(userExit) {
+          throw new Error(" El usuario ya existe")
+        }
+
+        const newUser = await new Users({
+            user,
+            password
+        }).save()
+        
+        return "creado correctamente";
     }
   }
 };

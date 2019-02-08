@@ -107,12 +107,18 @@ type Mutation {
   setClient(input: ClientInput): Client
   uploadClient(input: ClientInput): Client
   deleteClient(id: ID!): String
+
   #Products
   setProduct(input: ProductInput): Product
   uploadProduct(input: ProductInput): Product
   deleteProduct(id: ID!): String
+
   #Orders
   setOrders(input: OrderInput): Order
   updateOrders(input: OrderInput): Order
+
+  #users
+  createUser(user: String!, password: String!): String
+
 
 }
