@@ -11,6 +11,7 @@ mongoose.set('useFindAndModify', false);
 const clientsSchema = new mongoose.Schema({
     name: String,
     surname: String,
+     namecomplete: String,
     company: String,
     emails: Array,
     years: Number,
@@ -33,7 +34,7 @@ const orderSchema = new mongoose.Schema({
     order: Array,
     total: Number,
     date: Date,
-    client: String,
+    client: mongoose.Types.ObjectId,
     state: String
 })
 

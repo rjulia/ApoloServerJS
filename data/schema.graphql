@@ -2,6 +2,7 @@ type Client {
   id: ID
   name: String
   surname: String
+  namecomplete: String
   company: String
   years: Int
   emails: [Email]
@@ -32,6 +33,11 @@ type Product {
   stock: Int!
 }
 
+type TotalClient {
+  total: Float
+  client: [Client]
+}
+
 enum TypeClient {
   BASIC
   PREMIUM
@@ -53,6 +59,8 @@ type Query {
   totalProducts : String
   #Orders
   getOrders(client: String): [Order]
+  #graficas
+  topClients : [TotalClient]
 
 }
 """ Campos para los cliente nuevos"""
@@ -60,6 +68,7 @@ input ClientInput {
   id: ID
   name: String
   surname: String
+  namecomplete: String
   company: String
   years: Int
   emails: [EmailInput]

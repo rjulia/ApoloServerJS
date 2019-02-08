@@ -61,18 +61,61 @@ export const resolvers = {
           else resolve(order);
         });
       });
+    },
+    topClients: (root) => {
+      // https://docs.mongodb.com/manual/reference/command/aggregate/index.html
+      // https://docs.mongodb.com/manual/reference/operator/aggregation/match/index.html
+      // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+      // https://docs.mongodb.com/manual/reference/operator/aggregation/group/
+      // https://docs.mongodb.com/manual/reference/operator/aggregation/sort/index.html
+
+      return new Promise((resolve, object) => {
+        Orders.aggregate([
+          {
+            $match: { state: "COMPLETE" }
+          },
+          {
+            $group: {
+              _id: "$client",
+              total: { $sum: "$total" }
+            }
+          },
+          {
+            $lookup: {
+              from: "clients",
+              localField: "_id",
+              foreignField: "_id",
+              as: "client"
+            }
+          },
+          {
+            $sort: { total: -1 }
+          },
+          {
+            $limit: 10
+          }
+        ],(err, result) => {
+          if (err) rejects(err);
+          else resolve(result);
+        } );
+
+      })
     }
   },
   Mutation: {
     setClient: (root, { input }) => {
+      const namecomplete = `${input.name} ${input.surname}`
+      console.log(namecomplete)
       const newClient = new Clients({
         name: input.name,
         surname: input.surname,
+        namecomplete: input.name + ' ' + input.surname,
         company: input.company,
         emails: input.emails,
         years: input.years,
         type: input.type,
       });
+      console.log()
       newClient.id = newClient._id;
 
       return new Promise((resolve, obj) => {
@@ -152,18 +195,7 @@ export const resolvers = {
       newOrder.id = newOrder._id;
 
       return new Promise((resolve, obj) => {
-        // recorrer y actualizar la cantidad de productos con $inc de mongodb
-        // es para variar un dato en otra collecion
-        // https://docs.mongodb.com/manual/reference/operator/update/inc/index.html
-        input.order.forEach(order => {
-            Products.updateOne({_id: order.id }, 
-              { "$inc" : 
-                { "stock" : -order.quantity }
-              }, function (error) {
-                  if(error) return new Error(error);
-              }
-            )
-        });
+       
         newOrder.save(err => {
           if (err) rejects(err);
           else resolve(newOrder);
@@ -173,6 +205,27 @@ export const resolvers = {
     updateOrders: (root, { input }) => {
 
       return new Promise((resolve, obj)=> {
+         // recorrer y actualizar la cantidad de productos con $inc de mongodb
+        // es para variar un dato en otra collecion
+        // https://docs.mongodb.com/manual/reference/operator/update/inc/index.html
+        const {state} = input;
+        let instruction;
+        if (state === 'COMPLETE') {
+          instruction = '-';
+        } else if (state === 'CANCELLED') {
+          instruction = '+';
+        }
+        console.log(state, instruction)
+        input.order.forEach(order => {
+            Products.updateOne({_id: order.id }, 
+              { "$inc" : 
+                { "stock" : `${instruction}${order.quantity}` }
+              }, function (error) {
+                  if(error) return new Error(error);
+              }
+            )
+        });
+
         Orders.findOneAndUpdate(
           { _id: input.id },
           input,
