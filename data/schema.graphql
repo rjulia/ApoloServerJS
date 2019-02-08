@@ -104,5 +104,6 @@ type Mutation {
   deleteProduct(id: ID!): String
   #Orders
   setOrders(input: OrderInput): Order
+  updateOrders(input: OrderInput): Order
 
 }

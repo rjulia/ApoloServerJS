@@ -55,7 +55,6 @@ export const resolvers = {
     getOrders: (root, {client}) => {
       // cpara filtrar una base de datos de mongose, por un campo, le pasas entre llaves el valor que quieres filtrar de todos los campos dispobible, en este caso , por client e {cliente}
       // https://docs.mongodb.com/manual/reference/method/db.collection.find/index.html
-      console.log(client)
       return new Promise((resolve, object) => {
         Orders.find({"client": client}, (err, order) => {
           if (err) rejects(err);
@@ -170,6 +169,20 @@ export const resolvers = {
           else resolve(newOrder);
         });
       });
+    },
+    updateOrders: (root, { input }) => {
+
+      return new Promise((resolve, obj)=> {
+        Orders.findOneAndUpdate(
+          { _id: input.id },
+          input,
+          { new: true },
+          (err, product) => {
+            if (err) rejects(err);
+            else resolve(product);
+          }
+        );
+      })
     }
   }
 };
