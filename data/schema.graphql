@@ -119,6 +119,7 @@ type Mutation {
 
   #users
   createUser(user: String!, password: String!): String
+  authUser(user: String!, password: String!): String
 
 
 }

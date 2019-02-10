@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { Clients, Products, Orders, Users } from "./db";
 import { rejects } from "assert";
+import bcrypt from 'bcrypt';
+
 
 export const resolvers = {
   Query: {
@@ -242,7 +244,7 @@ export const resolvers = {
         const userExit = await Users.findOne({user})
 
         if(userExit) {
-          throw new Error(" El usuario ya existe")
+          throw new Error("This user already exit")
         }
 
         const newUser = await new Users({
@@ -250,7 +252,22 @@ export const resolvers = {
             password
         }).save()
         
-        return "creado correctamente";
-    }
+        return "Create correctly";
+    },
+    authUser: async (root, { user, password } ) =>{
+      // revisar si hayalguno repetido
+      const userEmail = await Users.findOne({user});
+
+      if(!userEmail){
+        throw new Error("User not find")
+      }
+      const passwordCorrect = await bcrypt.compare(password, userEmail.password);
+
+      if (!passwordCorrect) {
+        return "password incorrect"; 
+      } else {
+        return "password correct"; 
+      }
+  },
   }
 };
