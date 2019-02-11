@@ -130,6 +130,7 @@ export const resolvers = {
         emails: input.emails,
         years: input.years,
         type: input.type,
+        seller: input.seller
       });
       newClient.id = newClient._id;
 

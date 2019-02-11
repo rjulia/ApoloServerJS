@@ -17,6 +17,7 @@ const clientsSchema = new mongoose.Schema({
     years: Number,
     type: String,
     orders: Array,
+    seller: mongoose.Types.ObjectId,
 })
 
 const Clients = mongoose.model('clients', clientsSchema);

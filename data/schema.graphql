@@ -7,6 +7,7 @@ type Client {
   years: Int
   emails: [Email]
   type: TypeClient
+  seller: ID
 }
 type Email {
   email: String
@@ -92,6 +93,7 @@ input ClientInput {
   years: Int
   emails: [EmailInput]
   type: TypeClient
+  seller: ID
 }
 
 input EmailInput {
