@@ -114,8 +114,9 @@ export const resolvers = {
         if (!currentUser) {
           return null;
         }
-        console.log(currentUser);
-        const user = Users.findOne({user: currentUser.user})
+        // obtener el usuario actual del request del JWT Verificado
+        const user = Users.findOne({user: currentUser.user});
+        return user;
     }
   },
   Mutation: {
