@@ -38,6 +38,14 @@ type TotalClient {
   client: [Client]
 }
 
+type Token {
+  token: String
+}
+# Si cuando creas usuario, que en este caso solo es usario y contrasena, aqui habroa que completar
+type User {
+  user: String
+}
+
 enum TypeClient {
   BASIC
   PREMIUM
@@ -61,6 +69,9 @@ type Query {
   getOrders(client: String): [Order]
   #graficas
   topClients : [TotalClient]
+
+  #token get users
+  getUser: User
 
 }
 """ Campos para los cliente nuevos"""
@@ -119,7 +130,7 @@ type Mutation {
 
   #users
   createUser(user: String!, password: String!): String
-  authUser(user: String!, password: String!): String
+  authUser(user: String!, password: String!): Token
 
 
 }

@@ -2,7 +2,14 @@ import mongoose from "mongoose";
 import { Clients, Products, Orders, Users } from "./db";
 import { rejects } from "assert";
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config({path: 'variables.env'});
+import jwt from 'jsonwebtoken';
 
+const createToken = (userObj, secret, expiresIn) => {
+    const{ user} = userObj
+    return jwt.sign({user}, secret, {expiresIn});
+}
 
 export const resolvers = {
   Query: {
@@ -102,12 +109,18 @@ export const resolvers = {
         } );
 
       })
+    },
+    getUser:  (root, args, {currentUser}) => {
+        if (!currentUser) {
+          return null;
+        }
+        console.log(currentUser);
+        const user = Users.findOne({user: currentUser.user})
     }
   },
   Mutation: {
     setClient: (root, { input }) => {
       const namecomplete = `${input.name} ${input.surname}`
-      console.log(namecomplete)
       const newClient = new Clients({
         name: input.name,
         surname: input.surname,
@@ -117,7 +130,6 @@ export const resolvers = {
         years: input.years,
         type: input.type,
       });
-      console.log()
       newClient.id = newClient._id;
 
       return new Promise((resolve, obj) => {
@@ -256,18 +268,20 @@ export const resolvers = {
     },
     authUser: async (root, { user, password } ) =>{
       // revisar si hayalguno repetido
-      const userEmail = await Users.findOne({user});
+      const userObj = await Users.findOne({user});
 
-      if(!userEmail){
+      if(!userObj){
         throw new Error("User not find")
       }
-      const passwordCorrect = await bcrypt.compare(password, userEmail.password);
+      const passwordCorrect = await bcrypt.compare(password, userObj.password);
 
       if (!passwordCorrect) {
-        return "password incorrect"; 
-      } else {
-        return "password correct"; 
+        throw new Error("Password incorrect");
+      } 
+
+      return {
+        token: createToken(userObj, process.env.SECRETO, '1hr')
       }
-  },
+    },
   }
 };

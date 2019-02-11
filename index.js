@@ -4,9 +4,30 @@ import express from 'express';
 import { ApolloServer}  from "apollo-server-express";
 import { typeDefs } from './data/schema';
 import { resolvers } from "./data/resolvers";
+import dotenv from 'dotenv';
+dotenv.config({path: 'variables.env'});
+import jwt from 'jsonwebtoken';
 
 const app = express();
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({
+  typeDefs, 
+  resolvers,
+  context: async({req}) => {
+    //aqui obtengo el token que mando desde Aplolo cliente en operation.setContext
+    const token = req.headers['authorization']
+    if(token !== "null"){
+      try {
+        const currentUser = await jwt.verify(token, process.env.SECRETO);
+        req.currentUser = currentUser;
+        return {
+          currentUser
+        }
+      } catch (err) {
+          console.error(err)
+      }
+    }
+  }
+});
 
 server.applyMiddleware({app})
 
