@@ -43,7 +43,10 @@ type Token {
 }
 # Si cuando creas usuario, que en este caso solo es usario y contrasena, aqui habroa que completar
 type User {
+  id: ID
   user: String
+  name: String
+  rol: Rol
 }
 
 enum TypeClient {
@@ -54,6 +57,11 @@ enum StateOrder {
   PENDING
   COMPLETE
   CANCELLED
+}
+
+enum Rol {
+  ADMIN
+  SELLER
 }
 
 type Query {
@@ -129,7 +137,7 @@ type Mutation {
   updateOrders(input: OrderInput): Order
 
   #users
-  createUser(user: String!, password: String!): String
+  createUser(user: String!, name: String!, rol: String!, password: String!): String
   authUser(user: String!, password: String!): Token
 
 

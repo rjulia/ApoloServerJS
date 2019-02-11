@@ -252,7 +252,7 @@ export const resolvers = {
         );
       })
     },
-    createUser: async (root, { user, password } ) =>{
+    createUser: async (root, { user, name, rol, password } ) =>{
         // revisar si hayalguno repetido
         const userExit = await Users.findOne({user})
 
@@ -262,6 +262,8 @@ export const resolvers = {
 
         const newUser = await new Users({
             user,
+            name,
+            rol,
             password
         }).save()
         

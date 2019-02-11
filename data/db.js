@@ -45,6 +45,8 @@ const Orders = mongoose.model('orders', orderSchema);
 
 const usersSchema = new mongoose.Schema({
     user: String,
+    name: String,
+    rol: String,
     password: String,
 })
 
