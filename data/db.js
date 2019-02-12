@@ -36,7 +36,8 @@ const orderSchema = new mongoose.Schema({
     total: Number,
     date: Date,
     client: mongoose.Types.ObjectId,
-    state: String
+    state: String,
+    seller:  mongoose.Types.ObjectId
 })
 
 
@@ -49,6 +50,7 @@ const usersSchema = new mongoose.Schema({
     name: String,
     rol: String,
     password: String,
+    
 })
 
 // hashear loos password antes de guardarlos

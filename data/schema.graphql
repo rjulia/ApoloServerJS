@@ -39,6 +39,10 @@ type TotalClient {
   client: [Client]
 }
 
+type TotalSeller {
+  total: Float
+  seller: [User]
+}
 type Token {
   token: String
 }
@@ -67,7 +71,7 @@ enum Rol {
 
 type Query {
   #Clients
-  getClients(limit: Int, offset: Int): [Client]
+  getClients(limit: Int, offset: Int, seller: String): [Client]
   getClient(id: ID): Client 
   totalClients : String
   #Products
@@ -78,6 +82,8 @@ type Query {
   getOrders(client: String): [Order]
   #graficas
   topClients : [TotalClient]
+  topSellers : [TotalSeller]
+
 
   #token get users
   getUser: User
@@ -103,11 +109,12 @@ input EmailInput {
 """ Campos para los pedidos nuevos"""
 input OrderInput {
   id: ID
-  order: [OderProductInput],
-  total: Float,
-  date: String,
-  client: ID,
+  order: [OderProductInput]
+  total: Float
+  date: String
+  client: ID
   state: StateOrder
+  seller: ID
 }
 
 input OderProductInput {

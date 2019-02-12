@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { Clients, Products, Orders, Users } from "./db";
 import { rejects } from "assert";
+const ObjectId = mongoose.Types.ObjectId;
+
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config({path: 'variables.env'});
@@ -13,10 +15,16 @@ const createToken = (userObj, secret, expiresIn) => {
 
 export const resolvers = {
   Query: {
-    getClients: (root, { limit, offset }) => {
-      return Clients.find({})
+    getClients: (root, { limit, offset, seller }) => {
+
+      let filter;
+      if(seller){
+        filter = { seller: new ObjectId(seller)};
+      }
+      return Clients.find(filter)
+        .sort({ age : 1 } )
         .limit(limit)
-        .skip(offset);
+        .skip(offset)
     },
     getClient: (root, { id }) => {
       return new Promise((resolve, object) => {
@@ -95,6 +103,39 @@ export const resolvers = {
               localField: "_id",
               foreignField: "_id",
               as: "client"
+            }
+          },
+          {
+            $sort: { total: -1 }
+          },
+          {
+            $limit: 10
+          }
+        ],(err, result) => {
+          if (err) rejects(err);
+          else resolve(result);
+        } );
+
+      })
+    },
+    topSellers: (root) => {
+      return new Promise((resolve, object) => {
+        Orders.aggregate([
+          {
+            $match: { state: "COMPLETE" }
+          },
+          {
+            $group: {
+              _id: "$seller",
+              total: { $sum: "$total" }
+            }
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "_id",
+              foreignField: "_id",
+              as: "seller"
             }
           },
           {
@@ -205,7 +246,8 @@ export const resolvers = {
 				total: input.total,
 				date: new Date(),			
 				client: input.client,
-				state: "PENDING",      
+        state: "PENDING", 
+        seller: input.seller     
 				});
 
       newOrder.id = newOrder._id;
@@ -231,7 +273,6 @@ export const resolvers = {
         } else if (state === 'CANCELLED') {
           instruction = '+';
         }
-        console.log(state, instruction)
         input.order.forEach(order => {
             Products.updateOne({_id: order.id }, 
               { "$inc" : 
